@@ -20,8 +20,10 @@ import Tables from "../../pages/tables";
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 import BlankPage from "../../pages/blankpage/BlankPage";
-import FormOrganization from "../../pages/form-organization/FormOrganization";
-import ListOrganization from "../../pages/list-organization/ListOrganization";
+import FormOrganization from "../../pages/organizations/form-organization/FormOrganization";
+import ListOrganization from "../../pages/organizations/list-organization/ListOrganization";
+import ListBackup from "../../pages/backups/list-backup/ListBackup";
+import FormBackup from "../../pages/backups/form-backup/FormBackup";
 
 function Layout(props) {
   var classes = useStyles();
@@ -44,8 +46,10 @@ function Layout(props) {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/tables" component={Tables} />
               <Route path="/app/blank" component={BlankPage} />
-              <Route path="/app/organization" component={ListOrganization} />
-              <Route path="/app/form-organization/:id?" component={FormOrganization} />
+              <Route path="/app/organizations" component={ListOrganization} />
+              <Route path="/app/form-organizations/:id?" component={FormOrganization} />
+              <Route path="/app/backups" component={ListBackup} />
+              <Route path="/app/form-backups/:id?" component={FormBackup} />
             </Switch>
           </div>
         </>

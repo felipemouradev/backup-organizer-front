@@ -7,9 +7,8 @@ import {toastCustom} from "../../utils/toastCustom";
 import {CustomToastContainer} from "../CustoToastNotification/CustomToastNotification";
 
 export function TableActions(props) {
-
-    const deleteEntity = async () => {
-        const {id, deleteEntity} = props;
+    const {id, deleteEntity} = props;
+    const fnDeleteEntity = async () => {
         try {
             await axiosInstancePrivate.delete(deleteEntity + '/' + id);
             toastCustom("success", "Success");
@@ -21,10 +20,10 @@ export function TableActions(props) {
 
     return <div>
         <CustomToastContainer />
-        <Link style={{color: "inherit"}} to={`/app/form-organization/${props.id}`}>
+        <Link style={{color: "inherit"}} to={`/app/form-${deleteEntity}/${props.id}`}>
             <CreateIcon/>
         </Link>
-        <DeleteIcon onClick={() => deleteEntity()}/>
+        <DeleteIcon onClick={() => fnDeleteEntity()}/>
     </div>
 }
 

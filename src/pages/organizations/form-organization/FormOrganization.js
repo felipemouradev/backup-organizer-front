@@ -5,7 +5,7 @@ import axios from 'axios';
 import clsx from 'clsx';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../../components/PageTitle";
 import {
     FormControl,
     Grid,
@@ -13,7 +13,7 @@ import {
     FormControlLabel,
     Switch, TextField
 } from "@material-ui/core";
-import Widget from "../../components/Widget";
+import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({

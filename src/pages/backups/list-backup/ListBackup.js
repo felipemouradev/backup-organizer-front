@@ -3,25 +3,25 @@ import {Grid} from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
 
 // components
-import PageTitle from "../../components/PageTitle";
-import {TableActions} from "../../components/TableActions/TableActions"
+import PageTitle from "../../../components/PageTitle";
+import {TableActions} from "../../../components/TableActions/TableActions"
 
 //mock
 const datatableData = [
-    ["Org1", <TableActions id={1} deleteEntity={"organization"}/>],
-    ["Org2", <TableActions id={2} deleteEntity={"organization"}/>,],
+    ["Backup1", "Org1", <TableActions id={1} deleteEntity={"backups"}/>],
+    ["Backup2", "Org1", <TableActions id={2} deleteEntity={"backups"}/>,],
 ];
 
-export default function ListOrganization() {
+export default function ListBackup() {
     return (
         <>
-            <PageTitle title="Organizations"/>
+            <PageTitle title="Backup"/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <MUIDataTable
-                        title="Organization List"
+                        title="Backup List"
                         data={datatableData}
-                        columns={["Name", "Actions"]}
+                        columns={["Name", "Organization" ,"Actions"]}
                         options={{
                             filterType: "checkbox",
                         }}
