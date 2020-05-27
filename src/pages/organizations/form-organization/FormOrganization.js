@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
-import axios from 'axios';
 import clsx from 'clsx';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -15,6 +14,11 @@ import {
 } from "@material-ui/core";
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
+import {axiosInstancePrivate} from "../../../utils/network";
+import {toastCustom} from "../../../utils/toastCustom";
+import {withRouter} from "react-router-dom";
+import {CustomToastContainer} from "../../../components/CustoToastNotification/CustomToastNotification";
+import {useParams} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,35 +29,30 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const contactFormEndpoint = process.env.REACT_APP_CONTACT_ENDPOINT;
 
 function FormOrganization() {
     const classes = useStyles();
     const organizationSchema = {name: '', isActive: false};
-
+    let {id} = useParams();
     return (
         <>
             <PageTitle title="Organization"/>
+            <CustomToastContainer/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Widget title="Organization Form" upperTitle>
+                    <Widget title={`${!!id ? 'Update' : 'Create'} Organization`} upperTitle>
                         <Divider light/>
                         <Formik
                             initialValues={organizationSchema}
-                            onSubmit={(values, {setSubmitting}) => {
+                            onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
-                                axios.post(contactFormEndpoint,
-                                    values,
-                                    {
-                                        headers: {
-                                            'Access-Control-Allow-Origin': '*',
-                                            'Content-Type': 'application/json',
-                                        }
-                                    },
-                                ).then((resp) => {
-                                        console.log('OK')
-                                    }
-                                );
+                                try {
+                                    await axiosInstancePrivate.post('/organizations', values);
+                                    toastCustom('success', 'Organization Saved')
+                                } catch (e) {
+                                    toastCustom('error', 'Error in save organization');
+                                }
+
                             }}
                             validationSchema={Yup.object().shape({
                                 name: Yup.string()
@@ -123,4 +122,4 @@ function FormOrganization() {
     );
 }
 
-export default FormOrganization;
+export default withRouter(FormOrganization);

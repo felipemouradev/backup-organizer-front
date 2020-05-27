@@ -30,7 +30,7 @@ const structure = [
   {
     id: 1,
     label: "Organizations",
-    link: "/app/organization",
+    link: "/app/organizations",
     icon: <HomeIcon />,
   },{
     id: 2,
@@ -47,7 +47,7 @@ const structure = [
   {
     id: 4,
     label: "Synchronizer",
-    link: "/app/backups",
+    link: "/app/synchronizer",
     icon: <SyncIcon />,
   },
 ];

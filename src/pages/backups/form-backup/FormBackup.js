@@ -15,6 +15,7 @@ import {
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 import {axiosInstancePrivate} from "../../../utils/network";
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,13 +36,13 @@ function FormBackup() {
         organizationId: '',
         frequency: 30
     };
-
+    let {id} = useParams();
     return (
         <>
             <PageTitle title="Backup"/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Widget title="Backup Form" upperTitle>
+                    <Widget title={`${!!id ? 'Update' : 'Create'} Backup`} upperTitle>
                         <Divider light/>
                         <Formik
                             initialValues={backupSchema}
