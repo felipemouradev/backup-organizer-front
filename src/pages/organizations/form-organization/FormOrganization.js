@@ -19,6 +19,7 @@ import {toastCustom} from "../../../utils/toastCustom";
 import {withRouter} from "react-router-dom";
 import {CustomToastContainer} from "../../../components/CustoToastNotification/CustomToastNotification";
 import {useParams} from 'react-router-dom'
+import {OrganizationSchema, OrganizationSchemaValidation} from "../../../schemas/organization";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,10 +30,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
 function FormOrganization() {
     const classes = useStyles();
-    const organizationSchema = {name: '', isActive: false};
     let {id} = useParams();
     return (
         <>
@@ -43,7 +42,7 @@ function FormOrganization() {
                     <Widget title={`${!!id ? 'Update' : 'Create'} Organization`} upperTitle>
                         <Divider light/>
                         <Formik
-                            initialValues={organizationSchema}
+                            initialValues={OrganizationSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
                                 try {
@@ -54,12 +53,7 @@ function FormOrganization() {
                                 }
 
                             }}
-                            validationSchema={Yup.object().shape({
-                                name: Yup.string()
-                                    .required('Required'),
-                                isActive: Yup.boolean()
-                                    .required('Required'),
-                            })}
+                            validationSchema={OrganizationSchemaValidation}
                         >
                             {(props) => {
                                 const {

@@ -16,6 +16,7 @@ import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 import {axiosInstancePrivate} from "../../../utils/network";
 import {useParams} from "react-router-dom";
+import {BackupSchema, BackupSchemaValidation} from "../../../schemas/backup";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,14 +29,6 @@ const useStyles = makeStyles((theme) => ({
 
 function FormBackup() {
     const classes = useStyles();
-    const backupSchema = {
-        name: '',
-        prefixName: '',
-        sizeRange: 100000,
-        isActive: false,
-        organizationId: '',
-        frequency: 30
-    };
     let {id} = useParams();
     return (
         <>
@@ -45,7 +38,7 @@ function FormBackup() {
                     <Widget title={`${!!id ? 'Update' : 'Create'} Backup`} upperTitle>
                         <Divider light/>
                         <Formik
-                            initialValues={backupSchema}
+                            initialValues={BackupSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
                                 try {
@@ -54,20 +47,7 @@ function FormBackup() {
                                     console.log('e: ', e);
                                 }
                             }}
-                            validationSchema={Yup.object().shape({
-                                name: Yup.string()
-                                    .required('Required'),
-                                prefixName: Yup.string()
-                                    .required('Required'),
-                                sizeRange: Yup.number()
-                                    .required('Required'),
-                                organizationId: Yup.string()
-                                    .required('Required'),
-                                frequency: Yup.number()
-                                    .required('Required'),
-                                isActive: Yup.boolean()
-                                    .required('Required'),
-                            })}
+                            validationSchema={BackupSchemaValidation}
                         >
                             {(props) => {
                                 const {
