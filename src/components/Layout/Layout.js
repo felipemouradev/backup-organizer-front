@@ -21,6 +21,7 @@ import Tables from "../../pages/tables";
 import { useLayoutState } from "../../context/LayoutContext";
 import BlankPage from "../../pages/blankpage/BlankPage";
 import FormOrganization from "../../pages/form-organization/FormOrganization";
+import ListOrganization from "../../pages/list-organization/ListOrganization";
 
 function Layout(props) {
   var classes = useStyles();
@@ -43,7 +44,8 @@ function Layout(props) {
               <Route path="/app/dashboard" component={Dashboard} />
               <Route path="/app/tables" component={Tables} />
               <Route path="/app/blank" component={BlankPage} />
-              <Route path="/app/organization" component={FormOrganization} />
+              <Route path="/app/organization" component={ListOrganization} />
+              <Route path="/app/form-organization/:id?" component={FormOrganization} />
             </Switch>
           </div>
         </>
