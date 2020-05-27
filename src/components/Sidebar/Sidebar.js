@@ -7,6 +7,7 @@ import {
   History as HistoryIcon,
   Backup as BackupIcon,
   Sync as SyncIcon,
+  Storage as StorageIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -40,12 +41,18 @@ const structure = [
   },
   {
     id: 3,
+    label: "Databases",
+    link: "/app/databases",
+    icon: <StorageIcon />,
+  },
+  {
+    id: 4,
     label: "Backups",
     link: "/app/backups",
     icon: <BackupIcon />,
   },
   {
-    id: 4,
+    id: 5,
     label: "Synchronizer",
     link: "/app/synchronizer",
     icon: <SyncIcon />,

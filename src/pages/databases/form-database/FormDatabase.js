@@ -16,6 +16,7 @@ import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 import {axiosInstancePrivate} from "../../../utils/network";
 import {useParams} from "react-router-dom";
+import {DatabaseSchema, DatabaseShemaValidation} from "../../../schemas/database";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -26,48 +27,27 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function FormBackup() {
+function FormDatabase() {
     const classes = useStyles();
-    const backupSchema = {
-        name: '',
-        prefixName: '',
-        sizeRange: 100000,
-        isActive: false,
-        organizationId: '',
-        frequency: 30
-    };
     let {id} = useParams();
     return (
         <>
-            <PageTitle title="Backup"/>
+            <PageTitle title="Database"/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Widget title={`${!!id ? 'Update' : 'Create'} Backup`} upperTitle>
+                    <Widget title={`${!!id ? 'Update' : 'Create'} Database`} upperTitle>
                         <Divider light/>
                         <Formik
-                            initialValues={backupSchema}
+                            initialValues={DatabaseSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
                                 try {
-                                    await axiosInstancePrivate.post('backups', values);
+                                    await axiosInstancePrivate.post('databases', values);
                                 } catch (e) {
                                     console.log('e: ', e);
                                 }
                             }}
-                            validationSchema={Yup.object().shape({
-                                name: Yup.string()
-                                    .required('Required'),
-                                prefixName: Yup.string()
-                                    .required('Required'),
-                                sizeRange: Yup.number()
-                                    .required('Required'),
-                                organizationId: Yup.string()
-                                    .required('Required'),
-                                frequency: Yup.number()
-                                    .required('Required'),
-                                isActive: Yup.boolean()
-                                    .required('Required'),
-                            })}
+                            validationSchema={DatabaseShemaValidation}
                         >
                             {(props) => {
                                 const {
@@ -86,7 +66,7 @@ function FormBackup() {
                                         <FormControl fullWidth className={clsx(classes.margin, classes.textField)}>
                                             <TextField
                                                 select
-                                                id="organizationId-backup"
+                                                id="organizationId-database"
                                                 label="Organization"
                                                 error={errors.organizationId && touched.organizationId}
                                                 name="organizationId"
@@ -100,7 +80,7 @@ function FormBackup() {
                                                 <MenuItem value={30}>Thirty</MenuItem>
                                             </TextField>
                                             <TextField
-                                                id="name-backup"
+                                                id="name-database"
                                                 name="name"
                                                 label="Name"
                                                 error={errors.name && touched.name}
@@ -110,34 +90,36 @@ function FormBackup() {
                                                 helperText={(errors.name && touched.name) && errors.name}
                                             />
                                             <TextField
-                                                id="prefixName-backup"
-                                                name="prefixName"
-                                                label="Prefix Name Backup"
-                                                error={errors.prefixName && touched.prefixName}
-                                                value={values.prefixName}
+                                                id="host-database"
+                                                name="host"
+                                                label="Host"
+                                                error={errors.host && touched.host}
+                                                value={values.host}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.prefixName && touched.prefixName) && errors.prefixName}
+                                                helperText={(errors.host && touched.host) && errors.host}
                                             />
                                             <TextField
-                                                id="sizeRange-backup"
-                                                name="sizeRange"
-                                                label="Size of Slice Backup"
-                                                error={errors.sizeRange && touched.sizeRange}
-                                                value={values.sizeRange}
+                                                id="password-database"
+                                                name="password"
+                                                label="Password"
+                                                error={errors.password && touched.password}
+                                                value={values.password}
+                                                type="password"
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.sizeRange && touched.sizeRange) && errors.sizeRange}
+                                                helperText={(errors.password && touched.password) && errors.password}
                                             />
                                             <TextField
-                                                id="frequency-backup"
-                                                name="frequency"
-                                                label="Frequency Backup (in minutes)"
-                                                error={errors.frequency && touched.frequency}
-                                                value={values.frequency}
+                                                id="port-database"
+                                                name="port"
+                                                label="Port"
+                                                type="number"
+                                                error={errors.port && touched.port}
+                                                value={values.port}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.frequency && touched.frequency) && errors.frequency}
+                                                helperText={(errors.port && touched.port) && errors.port}
                                             />
                                         </FormControl>
                                         <FormControlLabel
@@ -175,4 +157,4 @@ function FormBackup() {
     );
 }
 
-export default FormBackup;
+export default FormDatabase;
