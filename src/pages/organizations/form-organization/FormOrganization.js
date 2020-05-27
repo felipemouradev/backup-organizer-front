@@ -109,7 +109,7 @@ function FormOrganization() {
                                                 Reset
                                             </Button>
                                             <Button type="submit" disabled={isSubmitting}>
-                                                Submit
+                                                Save
                                             </Button>
                                         </DialogActions>
                                     </form>
