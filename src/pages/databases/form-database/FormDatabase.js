@@ -3,14 +3,13 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import clsx from 'clsx';
 import {Formik} from 'formik';
-import * as Yup from 'yup';
 import PageTitle from "../../../components/PageTitle";
 import {
     FormControl,
     Grid,
     Divider,
     FormControlLabel,
-    Switch, TextField, InputLabel, Select, MenuItem, FormHelperText
+    Switch, TextField, MenuItem
 } from "@material-ui/core";
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";

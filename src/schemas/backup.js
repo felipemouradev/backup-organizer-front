@@ -5,7 +5,9 @@ export const BackupSchema = {
     prefixName: '',
     sizeRange: 100000,
     isActive: false,
-    organizationId: '',
+    databaseId: 0,
+    cloudProvidersIds: [],
+    tableName: '',
     frequency: 30
 };
 
@@ -16,7 +18,9 @@ export const BackupSchemaValidation = Yup.object().shape({
         .required('Required'),
     sizeRange: Yup.number()
         .required('Required'),
-    organizationId: Yup.string()
+    databaseId: Yup.number()
+        .required('Required'),
+    cloudProvidersIds: Yup.array()
         .required('Required'),
     frequency: Yup.number()
         .required('Required'),

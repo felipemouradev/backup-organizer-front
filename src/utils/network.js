@@ -16,6 +16,7 @@ export const axiosInstancePrivate = axios.create({
     timeout: 1000,
     headers: {
         'Access-Control-Allow-Origin': '*',
+        'Authorization': 'Bearer ' + localStorage.getItem('id_token'),
         'Content-Type': 'application/json',
     }
 });

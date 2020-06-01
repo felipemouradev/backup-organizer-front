@@ -3,14 +3,13 @@ import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import clsx from 'clsx';
 import {Formik} from 'formik';
-import * as Yup from 'yup';
 import PageTitle from "../../../components/PageTitle";
 import {
     FormControl,
     Grid,
     Divider,
     FormControlLabel,
-    Switch, TextField, InputLabel, Select, MenuItem, FormHelperText
+    Switch, TextField, MenuItem, Input, InputLabel, Select, Chip
 } from "@material-ui/core";
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
@@ -27,9 +26,21 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
 function FormBackup() {
     const classes = useStyles();
     let {id} = useParams();
+
     return (
         <>
             <PageTitle title="Backup"/>
@@ -67,13 +78,13 @@ function FormBackup() {
                                             <TextField
                                                 select
                                                 id="organizationId-backup"
-                                                label="Organization"
-                                                error={errors.organizationId && touched.organizationId}
-                                                name="organizationId"
-                                                value={values.organizationId}
+                                                label="Database"
+                                                error={errors.databaseId && touched.databaseId}
+                                                name="databaseId"
+                                                value={values.databaseId}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.organizationId && touched.organizationId) && errors.organizationId}
+                                                helperText={(errors.databaseId && touched.databaseId) && errors.databaseId}
                                             >
                                                 <MenuItem value={10}>Ten</MenuItem>
                                                 <MenuItem value={20}>Twenty</MenuItem>
@@ -119,6 +130,35 @@ function FormBackup() {
                                                 onBlur={handleBlur}
                                                 helperText={(errors.frequency && touched.frequency) && errors.frequency}
                                             />
+                                            <FormControl className={classes.formControl}>
+                                                <InputLabel id="cloudProvidersIds-backup-label">Cloud Providers to Backup</InputLabel>
+                                                <Select
+                                                    labelId="cloudProvidersIds-backup-label"
+                                                    multiple
+                                                    id="cloudProvidersIds-backup"
+                                                    label="Cloud Providers Backup"
+                                                    error={errors.cloudProvidersIds && touched.cloudProvidersIds}
+                                                    input={<Input id="cloudProvidersIds-backup"/>}
+                                                    name="cloudProvidersIds"
+                                                    value={values.cloudProvidersIds}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    helperText={(errors.cloudProvidersIds && touched.cloudProvidersIds) && errors.cloudProvidersIds}
+                                                    renderValue={(selected) => (
+                                                        <div className={classes.chips}>
+                                                            {selected.map((value) => (
+                                                                <Chip key={value} label={value}
+                                                                      className={classes.chip}/>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    MenuProps={MenuProps}
+                                                >
+                                                    <MenuItem value={10}>Ten</MenuItem>
+                                                    <MenuItem value={20}>Twenty</MenuItem>
+                                                    <MenuItem value={30}>Thirty</MenuItem>
+                                                </Select>
+                                            </FormControl>
                                         </FormControl>
                                         <FormControlLabel
                                             control={
