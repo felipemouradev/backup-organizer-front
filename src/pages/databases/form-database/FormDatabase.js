@@ -83,9 +83,9 @@ function FormDatabase() {
     const update = async (values, id) => {
         try {
             await axiosInstancePrivate.put('/databases/' + id, values);
-            await toastCustom('success', 'Organization Updated');
+            await toastCustom('success', 'Database Updated');
         } catch (e) {
-            toastCustom('error', 'Error in Update organization');
+            toastCustom('error', 'Error in Update database');
         }
     };
 
@@ -99,7 +99,7 @@ function FormDatabase() {
                         <Divider light/>
                         <Formik
                             enableReinitialize={true}
-                            initialValues={dataBase | DatabaseSchema}
+                            initialValues={dataBase.ID ? dataBase : DatabaseSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
                                 !!id ? await update(values, id) : await save(values);

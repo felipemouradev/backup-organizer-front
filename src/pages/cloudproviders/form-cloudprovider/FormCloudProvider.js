@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import clsx from 'clsx';
@@ -9,14 +9,15 @@ import {
     Grid,
     Divider,
     FormControlLabel,
-    Switch, TextField, MenuItem, Input, InputLabel, Select, Chip
+    Switch, TextField, MenuItem
 } from "@material-ui/core";
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 import {axiosInstancePrivate} from "../../../utils/network";
 import {useParams} from "react-router-dom";
-import {BackupSchema, BackupSchemaValidation} from "../../../schemas/backup";
 import {CloudProviderSchema, CloudProviderSchemaValidation} from "../../../schemas/cloudprovider";
+import {toastCustom} from "../../../utils/toastCustom";
+import {CustomToastContainer} from "../../../components/CustoToastNotification/CustomToastNotification";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,26 +39,82 @@ const MenuProps = {
     },
 };
 
+const entityName = 'cloudproviders';
+
 function FormCloudProvider() {
     const classes = useStyles();
     let {id} = useParams();
 
+    const [orgs, setOrganizations] = useState([]);
+    const [cloudProvider, setCloudvider] = useState([]);
+
+    const fetchCloudProvider = useCallback(() => {
+        if (!id) {
+            return null;
+        }
+        axiosInstancePrivate.get(`/${entityName}/` + id)
+            .then(({data}) => {
+                setCloudvider(data);
+            });
+    }, [id]);
+
+    const fetchOrganization = useCallback(() => {
+        axiosInstancePrivate.get('/organizations')
+            .then(({data}) => {
+                setOrganizations(data);
+            });
+    }, []);
+
+    useEffect(() => {
+        fetchOrganization();
+        fetchCloudProvider();
+    }, [fetchCloudProvider]);
+
+    const renderOptions = () => {
+        const options = [];
+        orgs.map((org) => {
+            options.push(
+                cloudProvider.organizationId === org.ID ?
+                    <MenuItem selected={true} value={org.ID} key={org.ID}>{org.name}</MenuItem> :
+                    <MenuItem value={org.ID} key={org.ID}>{org.name}</MenuItem>
+            );
+            console.log('org: ', org);
+        });
+        return options;
+    };
+
+    const save = async (values) => {
+        try {
+            await axiosInstancePrivate.post(`/${entityName}`, values);
+            toastCustom('success', 'Cloud Provider Saved')
+        } catch (e) {
+            toastCustom('error', 'Error in save Cloud Provider');
+        }
+    };
+
+    const update = async (values, id) => {
+        try {
+            await axiosInstancePrivate.put(`/${entityName}/${id}`, values);
+            await toastCustom('success', 'Cloud Provider Updated');
+        } catch (e) {
+            toastCustom('error', 'Error in Update Cloud Provider');
+        }
+    };
+
     return (
         <>
             <PageTitle title="Cloud Provider"/>
+            <CustomToastContainer/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <Widget title={`${!!id ? 'Update' : 'Create'} Cloud Provder`} upperTitle>
                         <Divider light/>
                         <Formik
-                            initialValues={CloudProviderSchema}
+                            enableReinitialize={true}
+                            initialValues={cloudProvider.ID ? cloudProvider : CloudProviderSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
-                                try {
-                                    await axiosInstancePrivate.post('cloudproviders', values);
-                                } catch (e) {
-                                    console.log('e: ', e);
-                                }
+                                !!id ? await update(values, id) : await save(values);
                             }}
                             validationSchema={CloudProviderSchemaValidation}
                         >
@@ -87,9 +144,7 @@ function FormCloudProvider() {
                                                 onBlur={handleBlur}
                                                 helperText={(errors.organizationId && touched.organizationId) && errors.databaseId}
                                             >
-                                                <MenuItem value={10}>Ten</MenuItem>
-                                                <MenuItem value={20}>Twenty</MenuItem>
-                                                <MenuItem value={30}>Thirty</MenuItem>
+                                                {renderOptions()}
                                             </TextField>
                                             <TextField
                                                 id="name-backup"
