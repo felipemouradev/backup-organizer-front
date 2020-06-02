@@ -26,6 +26,8 @@ import ListBackup from "../../pages/backups/list-backup/ListBackup";
 import FormBackup from "../../pages/backups/form-backup/FormBackup";
 import ListDatabase from "../../pages/databases/list-database/ListDatabase";
 import FormDatabase from "../../pages/databases/form-database/FormDatabase";
+import ListCloudProvider from "../../pages/cloudproviders/list-cloudprovider/ListCloudProvider";
+import FormCloudProvider from "../../pages/cloudproviders/form-cloudprovider/FormCloudProvider";
 
 function Layout(props) {
     var classes = useStyles();
@@ -54,6 +56,8 @@ function Layout(props) {
                         <Route path="/app/form-databases/:id?" component={FormDatabase}/>
                         <Route path="/app/backups" component={ListBackup}/>
                         <Route path="/app/form-backups/:id?" component={FormBackup}/>
+                        <Route path="/app/cloudproviders" component={ListCloudProvider}/>
+                        <Route path="/app/form-cloudproviders/:id?" component={FormCloudProvider}/>
                     </Switch>
                 </div>
             </>

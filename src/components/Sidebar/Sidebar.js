@@ -8,6 +8,7 @@ import {
   Backup as BackupIcon,
   Sync as SyncIcon,
   Storage as StorageIcon,
+  Cloud as CloudIcon,
 } from "@material-ui/icons";
 import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router-dom";
@@ -53,6 +54,12 @@ const structure = [
   },
   {
     id: 5,
+    label: "Cloud Providers",
+    link: "/app/cloudproviders",
+    icon: <CloudIcon />,
+  },
+  {
+    id: 6,
     label: "Synchronizer",
     link: "/app/synchronizer",
     icon: <SyncIcon />,

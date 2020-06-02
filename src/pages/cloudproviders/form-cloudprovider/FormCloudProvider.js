@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import DialogActions from '@material-ui/core/DialogActions';
 import clsx from 'clsx';
@@ -9,15 +9,14 @@ import {
     Grid,
     Divider,
     FormControlLabel,
-    Switch, TextField, MenuItem
+    Switch, TextField, MenuItem, Input, InputLabel, Select, Chip
 } from "@material-ui/core";
 import Widget from "../../../components/Widget";
 import {makeStyles} from "@material-ui/styles";
 import {axiosInstancePrivate} from "../../../utils/network";
 import {useParams} from "react-router-dom";
-import {DatabaseSchema, DatabaseShemaValidation} from "../../../schemas/database";
-import {CustomToastContainer} from "../../../components/CustoToastNotification/CustomToastNotification";
-import {toastCustom} from "../../../utils/toastCustom";
+import {BackupSchema, BackupSchemaValidation} from "../../../schemas/backup";
+import {CloudProviderSchema, CloudProviderSchemaValidation} from "../../../schemas/cloudprovider";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,83 +27,39 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function FormDatabase() {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+function FormCloudProvider() {
     const classes = useStyles();
     let {id} = useParams();
 
-    const [orgs, setOrganizations] = useState([]);
-    const [dataBase, setDatabase] = useState([]);
-
-    const fetchDatabase = useCallback(() => {
-        if (!id) {
-            return null;
-        }
-        axiosInstancePrivate.get('/databases/' + id)
-            .then(({data}) => {
-                setDatabase(data);
-            });
-    }, [id]);
-
-    const fetchOrganization = useCallback(() => {
-        axiosInstancePrivate.get('/organizations')
-            .then(({data}) => {
-                setOrganizations(data);
-            });
-    }, []);
-
-    useEffect(() => {
-        fetchOrganization();
-        fetchDatabase();
-    }, [fetchOrganization]);
-
-
-    const renderOptions = () => {
-        const options = [];
-        orgs.map((org) => {
-            options.push(
-                dataBase.organizationId === org.ID ?
-                    <MenuItem selected={true} value={org.ID} key={org.ID}>{org.name}</MenuItem> :
-                    <MenuItem value={org.ID} key={org.ID}>{org.name}</MenuItem>
-            );
-            console.log('org: ', org);
-        });
-        return options;
-    };
-
-    const save = async (values) => {
-        try {
-            await axiosInstancePrivate.post('/databases', values);
-            toastCustom('success', 'Database Saved')
-        } catch (e) {
-            toastCustom('error', 'Error in save database');
-        }
-    };
-
-    const update = async (values, id) => {
-        try {
-            await axiosInstancePrivate.put('/databases/' + id, values);
-            await toastCustom('success', 'Organization Updated');
-        } catch (e) {
-            toastCustom('error', 'Error in Update organization');
-        }
-    };
-
     return (
         <>
-            <PageTitle title="Database"/>
-            <CustomToastContainer/>
+            <PageTitle title="Cloud Provider"/>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Widget title={`${!!id ? 'Update' : 'Create'} Database`} upperTitle>
+                    <Widget title={`${!!id ? 'Update' : 'Create'} Cloud Provder`} upperTitle>
                         <Divider light/>
                         <Formik
-                            enableReinitialize={true}
-                            initialValues={dataBase | DatabaseSchema}
+                            initialValues={CloudProviderSchema}
                             onSubmit={async (values, {setSubmitting}) => {
                                 setSubmitting(true);
-                                !!id ? await update(values, id) : await save(values);
+                                try {
+                                    await axiosInstancePrivate.post('cloudproviders', values);
+                                } catch (e) {
+                                    console.log('e: ', e);
+                                }
                             }}
-                            validationSchema={DatabaseShemaValidation}
+                            validationSchema={CloudProviderSchemaValidation}
                         >
                             {(props) => {
                                 const {
@@ -123,19 +78,21 @@ function FormDatabase() {
                                         <FormControl fullWidth className={clsx(classes.margin, classes.textField)}>
                                             <TextField
                                                 select
-                                                id="organizationId-database"
+                                                id="organizationId-backup"
                                                 label="Organization"
                                                 error={errors.organizationId && touched.organizationId}
                                                 name="organizationId"
                                                 value={values.organizationId}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.organizationId && touched.organizationId) && errors.organizationId}
+                                                helperText={(errors.organizationId && touched.organizationId) && errors.databaseId}
                                             >
-                                                {renderOptions()}
+                                                <MenuItem value={10}>Ten</MenuItem>
+                                                <MenuItem value={20}>Twenty</MenuItem>
+                                                <MenuItem value={30}>Thirty</MenuItem>
                                             </TextField>
                                             <TextField
-                                                id="name-database"
+                                                id="name-backup"
                                                 name="name"
                                                 label="Name"
                                                 error={errors.name && touched.name}
@@ -145,46 +102,44 @@ function FormDatabase() {
                                                 helperText={(errors.name && touched.name) && errors.name}
                                             />
                                             <TextField
-                                                id="host-database"
-                                                name="host"
-                                                label="Host"
-                                                error={errors.host && touched.host}
-                                                value={values.host}
+                                                id="accessKey-backup"
+                                                name="accessKey"
+                                                label="Access Key"
+                                                error={errors.accessKey && touched.accessKey}
+                                                value={values.accessKey}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.host && touched.host) && errors.host}
+                                                helperText={(errors.accessKey && touched.accessKey) && errors.accessKey}
                                             />
                                             <TextField
-                                                id="username-database"
-                                                name="username"
-                                                label="Username"
-                                                error={errors.username && touched.username}
-                                                value={values.username}
+                                                id="secretKey-backup"
+                                                name="secretKey"
+                                                label="Secret Key"
+                                                error={errors.secretKey && touched.secretKey}
+                                                value={values.secretKey}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.username && touched.username) && errors.username}
+                                                helperText={(errors.secretKey && touched.secretKey) && errors.secretKey}
                                             />
                                             <TextField
-                                                id="password-database"
-                                                name="password"
-                                                label="Password"
-                                                error={errors.password && touched.password}
-                                                value={values.password}
-                                                type="password"
+                                                id="region-backup"
+                                                name="region"
+                                                label="Region"
+                                                error={errors.region && touched.region}
+                                                value={values.region}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.password && touched.password) && errors.password}
+                                                helperText={(errors.region && touched.region) && errors.region}
                                             />
                                             <TextField
-                                                id="port-database"
-                                                name="port"
-                                                label="Port"
-                                                type="number"
-                                                error={errors.port && touched.port}
-                                                value={values.port}
+                                                id="endpoint-backup"
+                                                name="endpoint"
+                                                label="Endpoint"
+                                                error={errors.endpoint && touched.endpoint}
+                                                value={values.endpoint}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                helperText={(errors.port && touched.port) && errors.port}
+                                                helperText={(errors.endpoint && touched.endpoint) && errors.endpoint}
                                             />
                                         </FormControl>
                                         <FormControlLabel
@@ -222,4 +177,4 @@ function FormDatabase() {
     );
 }
 
-export default FormDatabase;
+export default FormCloudProvider;
